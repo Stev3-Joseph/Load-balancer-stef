@@ -16,6 +16,9 @@ var loadBalancingAlgorithm = undefined
 
 
 export default class LoadBalancer {
+    healthCheckInterval = 500;
+    healthCheckTimeout = 200;
+    healthStatus = new Map();
 
     constructor(configuration_) {
         configuration = configuration_
@@ -65,6 +68,27 @@ export default class LoadBalancer {
             serverFactory.createServers(configuration)
         });
 
+    }
+        async checkServerHealth(serverUrl) {
+        const controller = new AbortController();
+
+        const timeout = setTimeout(
+            () => controller.abort(),
+            this.healthCheckTimeout
+        );
+
+        try {
+            const response = await fetch(
+                `${serverUrl}/health`,
+                { signal: controller.signal }
+            );
+
+            return response.ok;
+        } catch {
+            return false;
+        } finally {
+            clearTimeout(timeout);
+        }
     }
 }
 

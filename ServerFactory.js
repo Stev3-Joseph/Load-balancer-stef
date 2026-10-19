@@ -56,7 +56,17 @@ export default class ServerFactory {
                         case "/":
                             res.writeHead(200);
                             res.end(`Server ${i} is running on http://${host}:${port}`);
-                            break
+                            break;
+
+                        case "/health":
+                            if (server.isHealthy()) {
+                                res.writeHead(200);
+                                res.end("OK");
+                            } else {
+                                res.writeHead(503);
+                                res.end("UNHEALTHY");
+                            }
+                            break;
                         default:
                             res.writeHead(200);
                            

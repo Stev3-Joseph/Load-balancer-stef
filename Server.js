@@ -6,9 +6,30 @@ export default class Server {
         this.processTime = processTime
         this.sessions = []
 
+        this.healthy = true
+        this.consecutiveFailures = 0
+        this.consecutiveSuccesses = 0
+
         setInterval(() => {
             this.maintainSessions()
         }, 2000);
+    }
+
+    // Simulate a server failure
+    simulateFailure() {
+        this.healthy = false
+        console.log(`Server ${this.id} has FAILED`)
+    }
+
+    // Simulate server recovery
+    simulateRecovery() {
+        this.healthy = true
+        console.log(`Server ${this.id} has RECOVERED`)
+    }
+
+    // Check whether the server is healthy
+    isHealthy() {
+        return this.healthy
     }
 
     getSessions() {
@@ -29,8 +50,12 @@ export default class Server {
     }
 
     async addSession(ipaddress){
+        if (!this.healthy) {
+            return false
+        }
+
         return new Promise(async (resolve, reject) => {
-            if(this.sessions.length <= this.maxSessions){
+            if(this.sessions.length < this.maxSessions){
                 let session = new Session(ipaddress, this.processTime)
                 this.sessions.push(session)
     
@@ -58,15 +83,16 @@ export default class Server {
         }
     }
 
-    getStatus(){
-        return {
-            "id":this.id,
-            "Server":`${this.name}`,
-            "MaxSessions":`${this.maxSessions}`,
-            "processTime":`${this.processTime}`,
-            "Active":this.getNoSessions(),
-            "limitReached": `${this.limitReached()}`
-        }
+    getStatus() {
+    return {
+        id: this.id,
+        Server: `${this.name}`,
+        MaxSessions: `${this.maxSessions}`,
+        processTime: `${this.processTime}`,
+        Active: this.getNoSessions(),
+        limitReached: `${this.limitReached()}`,
+        healthy: this.healthy
+    }
     }
 }
 

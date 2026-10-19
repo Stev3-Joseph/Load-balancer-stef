@@ -12,14 +12,14 @@ async function main() {
 
     config = {
         LoadBalancingAlgorithm: Utils.AlgorithmStr[1],
-        NoServers: 2,
+        NoServers: 5,
         Replicas: 3,
         MaxNoSessionsPerServer: 10,
         MinNoSessionsPerServer: 1,
         MaxProcessingTime: 30000, //30 seconds
         MinProcessingTime: 2000, //2 seconds
-        NoDatastores: 2,
-        MaxDatastoreSpace: 1000000, //1GB
+        NoDatastores: 5,
+        MaxDatastoreSpace: 10000000, //1GB
         MinDatastoreSpace: 100000, //100MB
         MaxSizeRequestPayload: 100000, //100MB
         MinSizeRequestPayload: 1000, //1MB
